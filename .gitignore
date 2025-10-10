@@ -1,0 +1,15 @@
+.env
+*.env
+
+*.pyc
+__pycache__/
+
+.vscode/
+.idea/
+
+error_filtered_logs_*.csv
+error_filtered_logs_*.json
+
+.venv/
+venv/
+env/
