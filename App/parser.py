@@ -3,6 +3,7 @@ import pandas as pd
 import json
 from _datetime import timedelta, datetime as dt
 from App.email_alert import send_email
+import os
 
 print("🚀 FastAPI code version: NEW build loaded")
 
@@ -14,9 +15,16 @@ def log_parse():
     count_logs = { "notice": 0, "error": 0 }
     error_only_logs = []
 
+    # 🔹 Ensure output folder exists
+    output_dir = "out"
+    os.makedirs(output_dir, exist_ok=True)
+
+    # 🔹 Use absolute path for the log file
+    log_file_path = os.path.join(os.getcwd(), "Apache_2k.log")
+
     # Open the file and read its contents
 
-    with open("Apache_2k.log", "r") as file:
+    with open(log_file_path, "r") as file:
         for eachline in file:
             for key, value in count_logs.items():
                 if key in eachline:
@@ -60,11 +68,12 @@ def log_parse():
     #removes incorrect timestamp values( NaT)  and saves back to df
     df = df.dropna(subset=["Timestamp"])
 
-    # Dataframe to csv file
-    df.to_csv(f"error_filtered_logs_{now.strftime('%Y%m%d_%H%M%S')}.csv", index=False)
+    # 🔹 Write outputs to /out folder
+    csv_path = os.path.join(output_dir, f"error_filtered_logs_{now.strftime('%Y%m%d_%H%M%S')}.csv")
+    json_path = os.path.join(output_dir, f"error_filtered_logs_{now.strftime('%Y%m%d_%H%M%S')}.json")
 
-    #Dataframe to json
-    json_data = df.to_json(orient="records", indent=4)
+    df.to_csv(csv_path, index=False)
+    df.to_json(json_path, orient="records", indent=4)
 
 
      #finding last one hour time value

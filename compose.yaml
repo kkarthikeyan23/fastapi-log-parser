@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  server:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./Apache_2k.log:/app/Apache_2k.log  # read-only log file
+      - logs_output:/app/out                 # Docker-managed volume for output
+    env_file:
+      - .env
+    user: "0:0"  # run as root to avoid permission issues on Windows
+
+volumes:
+  logs_output:
